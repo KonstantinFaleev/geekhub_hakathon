@@ -2,15 +2,15 @@ require 'nokogiri'
 require 'open-uri'
 
 class Notice < ApplicationRecord
-  url = "https://thenextweb.com/latest/"
+  url = "https://thenextweb.com/"
   data = Nokogiri::HTML(open(url))
-  @notices = data.css('h4_story-title a')
+  @notices = data.css('h4.story-title a')
   @notices.each do |notice|
     Notice.create(
-        :title => notice.css('story_title').text.strip,
+        :title => notice.css('h1').text.strip,
         :link => notice.css('side').text.strip,
-        :writer => notice.css('story-chunk').text.strip,
-        :created_on => notice.css('side back').text.strip
+        :writer => notice.css('div.post-body').text.strip,
+        :created_on => Date.today.to_s
     )
   end
 end
